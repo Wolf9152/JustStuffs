@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace PassKeeper.Utils
 {
-    public static class DialogUtils
+    public static class MessageUtils
     {
         public static void ShowException(Exception ex)
         {

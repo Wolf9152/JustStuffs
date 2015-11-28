@@ -1,4 +1,6 @@
-﻿namespace PassKeeper.Windows.Forms
+﻿using System;
+
+namespace PassKeeper.Windows.Forms
 {
     partial class PassKeeperMainForm
     {
@@ -42,9 +44,10 @@
             this._toolStripMenuItemNewProfile = new System.Windows.Forms.ToolStripMenuItem();
             this._toolStripMenuItemSaveProfiles = new System.Windows.Forms.ToolStripMenuItem();
             this._toolStripMenuItemDeleteProfile = new System.Windows.Forms.ToolStripMenuItem();
-            this._toolStripMenuItemHelp = new System.Windows.Forms.ToolStripMenuItem();
             this._buttonModifyAndCommit = new System.Windows.Forms.Button();
             this._buttonCancel = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
+            this._textBoxSearch = new System.Windows.Forms.TextBox();
             this.passProfileModelBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.passProfileModelBindingSource)).BeginInit();
@@ -57,15 +60,15 @@
             this._listBoxProfiles.FormattingEnabled = true;
             this._listBoxProfiles.Location = new System.Drawing.Point(0, 24);
             this._listBoxProfiles.Name = "_listBoxProfiles";
-            this._listBoxProfiles.Size = new System.Drawing.Size(216, 440);
-            this._listBoxProfiles.TabIndex = 0;
+            this._listBoxProfiles.Size = new System.Drawing.Size(216, 261);
+            this._listBoxProfiles.TabIndex = 6;
             this._listBoxProfiles.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this._listBoxProfiles_DrawItem);
             this._listBoxProfiles.DoubleClick += new System.EventHandler(this._listBoxProfiles_DoubleClick);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(222, 30);
+            this.label1.Location = new System.Drawing.Point(222, 56);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(30, 13);
             this.label1.TabIndex = 1;
@@ -75,11 +78,12 @@
             // 
             this._textBoxProfileName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this._textBoxProfileName.Location = new System.Drawing.Point(312, 27);
+            this._textBoxProfileName.Location = new System.Drawing.Point(312, 53);
             this._textBoxProfileName.Name = "_textBoxProfileName";
             this._textBoxProfileName.ReadOnly = true;
-            this._textBoxProfileName.Size = new System.Drawing.Size(534, 20);
-            this._textBoxProfileName.TabIndex = 2;
+            this._textBoxProfileName.Size = new System.Drawing.Size(412, 20);
+            this._textBoxProfileName.TabIndex = 1;
+            this._textBoxProfileName.TextChanged += new System.EventHandler(this._textBoxProfileName_TextChanged);
             // 
             // label2
             // 
@@ -92,7 +96,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(222, 56);
+            this.label3.Location = new System.Drawing.Point(222, 82);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(84, 13);
             this.label3.TabIndex = 1;
@@ -102,16 +106,16 @@
             // 
             this._textBoxUserName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this._textBoxUserName.Location = new System.Drawing.Point(312, 53);
+            this._textBoxUserName.Location = new System.Drawing.Point(312, 79);
             this._textBoxUserName.Name = "_textBoxUserName";
             this._textBoxUserName.ReadOnly = true;
-            this._textBoxUserName.Size = new System.Drawing.Size(534, 20);
-            this._textBoxUserName.TabIndex = 3;
+            this._textBoxUserName.Size = new System.Drawing.Size(412, 20);
+            this._textBoxUserName.TabIndex = 2;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(222, 82);
+            this.label4.Location = new System.Drawing.Point(222, 108);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(39, 13);
             this.label4.TabIndex = 1;
@@ -121,22 +125,24 @@
             // 
             this._textBoxPassword.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this._textBoxPassword.Location = new System.Drawing.Point(312, 79);
+            this._textBoxPassword.Location = new System.Drawing.Point(312, 105);
             this._textBoxPassword.Name = "_textBoxPassword";
             this._textBoxPassword.ReadOnly = true;
-            this._textBoxPassword.Size = new System.Drawing.Size(534, 20);
-            this._textBoxPassword.TabIndex = 4;
+            this._textBoxPassword.Size = new System.Drawing.Size(412, 20);
+            this._textBoxPassword.TabIndex = 3;
+            this._textBoxPassword.UseSystemPasswordChar = true;
+            this._textBoxPassword.KeyDown += new System.Windows.Forms.KeyEventHandler(this._textBoxPassword_KeyDown);
+            this._textBoxPassword.KeyUp += new System.Windows.Forms.KeyEventHandler(this._textBoxPassword_KeyUp);
             // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this._toolStripMenuItemNewProfile,
             this._toolStripMenuItemSaveProfiles,
-            this._toolStripMenuItemDeleteProfile,
-            this._toolStripMenuItemHelp});
+            this._toolStripMenuItemDeleteProfile});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(858, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(736, 24);
             this.menuStrip1.TabIndex = 4;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -161,26 +167,22 @@
             this._toolStripMenuItemDeleteProfile.Text = "Töröl";
             this._toolStripMenuItemDeleteProfile.Click += new System.EventHandler(this._toolStripMenuItemDeleteProfile_Click);
             // 
-            // _toolStripMenuItemHelp
-            // 
-            this._toolStripMenuItemHelp.Name = "_toolStripMenuItemHelp";
-            this._toolStripMenuItemHelp.Size = new System.Drawing.Size(46, 20);
-            this._toolStripMenuItemHelp.Text = "Súgó";
-            // 
             // _buttonModifyAndCommit
             // 
+            this._buttonModifyAndCommit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this._buttonModifyAndCommit.Enabled = false;
-            this._buttonModifyAndCommit.Location = new System.Drawing.Point(771, 105);
+            this._buttonModifyAndCommit.Location = new System.Drawing.Point(649, 131);
             this._buttonModifyAndCommit.Name = "_buttonModifyAndCommit";
             this._buttonModifyAndCommit.Size = new System.Drawing.Size(75, 23);
-            this._buttonModifyAndCommit.TabIndex = 6;
+            this._buttonModifyAndCommit.TabIndex = 4;
             this._buttonModifyAndCommit.Text = "Módosít";
             this._buttonModifyAndCommit.UseVisualStyleBackColor = true;
             this._buttonModifyAndCommit.Click += new System.EventHandler(this._buttonModifyAndCommit_Click);
             // 
             // _buttonCancel
             // 
-            this._buttonCancel.Location = new System.Drawing.Point(690, 105);
+            this._buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this._buttonCancel.Location = new System.Drawing.Point(568, 131);
             this._buttonCancel.Name = "_buttonCancel";
             this._buttonCancel.Size = new System.Drawing.Size(75, 23);
             this._buttonCancel.TabIndex = 5;
@@ -188,6 +190,25 @@
             this._buttonCancel.UseVisualStyleBackColor = true;
             this._buttonCancel.Visible = false;
             this._buttonCancel.Click += new System.EventHandler(this._buttonCancel_Click);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(222, 30);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(48, 13);
+            this.label5.TabIndex = 7;
+            this.label5.Text = "Keresés:";
+            // 
+            // _textBoxSearch
+            // 
+            this._textBoxSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this._textBoxSearch.Location = new System.Drawing.Point(312, 27);
+            this._textBoxSearch.Name = "_textBoxSearch";
+            this._textBoxSearch.Size = new System.Drawing.Size(412, 20);
+            this._textBoxSearch.TabIndex = 0;
+            this._textBoxSearch.TextChanged += new System.EventHandler(this._textBoxSearch_TextChanged);
             // 
             // passProfileModelBindingSource
             // 
@@ -197,7 +218,9 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(858, 464);
+            this.ClientSize = new System.Drawing.Size(736, 285);
+            this.Controls.Add(this._textBoxSearch);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this._buttonCancel);
             this.Controls.Add(this._buttonModifyAndCommit);
             this.Controls.Add(this._textBoxPassword);
@@ -211,6 +234,7 @@
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
+            this.MinimumSize = new System.Drawing.Size(408, 200);
             this.Name = "PassKeeperMainForm";
             this.Text = "PassKeeper";
             this.Load += new System.EventHandler(this.PassKeeperMainForm_Load);
@@ -237,8 +261,9 @@
         private System.Windows.Forms.ToolStripMenuItem _toolStripMenuItemNewProfile;
         private System.Windows.Forms.ToolStripMenuItem _toolStripMenuItemSaveProfiles;
         private System.Windows.Forms.ToolStripMenuItem _toolStripMenuItemDeleteProfile;
-        private System.Windows.Forms.ToolStripMenuItem _toolStripMenuItemHelp;
         private System.Windows.Forms.Button _buttonModifyAndCommit;
         private System.Windows.Forms.Button _buttonCancel;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox _textBoxSearch;
     }
 }

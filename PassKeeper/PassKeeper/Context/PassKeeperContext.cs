@@ -16,7 +16,7 @@ namespace PassKeeper.Context
 
         public String MasterKey { get; set; }
 
-        public PassProfileCollection Passes { get; set; }
+        public PassProfileCollection Passes { get; set; }        
 
         public PassProfileModel SelectedPass { get; set; }
 
@@ -39,7 +39,8 @@ namespace PassKeeper.Context
 
         public void CommitSelectedPass()
         {
-            if (Passes.Count(x => x.Name == SelectedPass.Name) != 0)
+            //Hiszen sajátmaga 1x biztos benne lesz, szóval ha már 2 van akkor van csak gáz...
+            if (Passes.Count(x => x.Name == SelectedPass.Name) > 1)
                 throw new PassException("Hiba!", String.Format("A(z) '{0}' névem már létezik profil, kérlek válasz másik nevet neki!", SelectedPass.Name));
 
             if (String.IsNullOrEmpty(SelectedPass.UserName))
@@ -84,6 +85,16 @@ namespace PassKeeper.Context
         {
             if (Passes.Contains(pass))
                 Passes.Remove(pass);
+        }
+
+        internal void RefreshSelectedName(String name)
+        {
+            var selectedInList = Passes.SingleOrDefault(x => x.Id == SelectedPass.Id);
+            if (selectedInList == null)
+                return;
+
+            selectedInList.Name = name;
+            View.RefreshProfiles();
         }
     }
 }

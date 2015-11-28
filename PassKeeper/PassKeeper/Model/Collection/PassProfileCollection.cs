@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace PassKeeper.Model.Collection
@@ -15,6 +16,20 @@ namespace PassKeeper.Model.Collection
 
             this.Add(newProfile);
             return newProfile;
+        }
+
+        public String Filter { get; set; }
+
+        public PassProfileModel[] FilteredCollection
+        {
+            get
+            {
+                if (String.IsNullOrEmpty(this.Filter))
+                    return this.ToArray();
+
+                var filteredList = this.FindAll(x => x.Name.Contains(this.Filter));
+                return filteredList.ToArray();
+            }
         }
     }
 }

@@ -32,7 +32,7 @@ namespace PassKeeper.Windows.Forms
             }
             catch (Exception ex)
             {
-                DialogUtils.ShowException(ex);
+                MessageUtils.ShowException(ex);
             }
         }
 

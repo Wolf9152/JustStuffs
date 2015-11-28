@@ -39,6 +39,7 @@
             this._textBoxMaster.PasswordChar = '*';
             this._textBoxMaster.Size = new System.Drawing.Size(202, 20);
             this._textBoxMaster.TabIndex = 0;
+            this._textBoxMaster.UseSystemPasswordChar = true;
             this._textBoxMaster.KeyDown += new System.Windows.Forms.KeyEventHandler(this._textBoxMaster_KeyDown);
             // 
             // _buttonCommit

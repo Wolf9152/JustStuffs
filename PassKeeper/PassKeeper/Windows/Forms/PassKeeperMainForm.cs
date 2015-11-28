@@ -30,6 +30,8 @@ namespace PassKeeper.Windows.Forms
                     _textBoxUserName.ReadOnly =
                     value == ModifyState.View;
 
+                _textBoxSearch.ReadOnly = value == ModifyState.Modify;
+
                 if (value == ModifyState.Modify)
                 {
                     _buttonCancel.Visible = true;
@@ -62,7 +64,7 @@ namespace PassKeeper.Windows.Forms
             }
             catch (Exception ex)
             {
-                DialogUtils.ShowException(ex);
+                MessageUtils.ShowException(ex);
             }
         }
 
@@ -72,7 +74,7 @@ namespace PassKeeper.Windows.Forms
             {
                 this.Context = new PassKeeperContext(this);
                 if (!File.Exists(Constants.FileName))
-                    DialogUtils.ShowWarrningMessage("Figyelem!", "A most beütött mester jelszó a későbbiek folyamán már nem módosítható és utólag nem visszakérhető!!!");
+                    MessageUtils.ShowWarrningMessage("Figyelem!", "A most beütött mester jelszó a későbbiek folyamán már nem módosítható és utólag nem visszakérhető!!!");
 
                 String masterKey = MasterKeyForm.ShowMasterKeyForm();
                 if (String.IsNullOrEmpty(masterKey))
@@ -83,7 +85,7 @@ namespace PassKeeper.Windows.Forms
             }
             catch (Exception ex)
             {
-                DialogUtils.ShowException(ex);
+                MessageUtils.ShowException(ex);
                 Application.Exit();
             }
         }
@@ -115,10 +117,11 @@ namespace PassKeeper.Windows.Forms
                     return;
 
                 Context.SetSelectedPass(pass);
+                _listBoxProfiles.Refresh();
             }
             catch (Exception ex)
             {
-                DialogUtils.ShowException(ex);
+                MessageUtils.ShowException(ex);
             }
         }
 
@@ -165,7 +168,7 @@ namespace PassKeeper.Windows.Forms
             }
             catch (Exception ex)
             {
-                DialogUtils.ShowException(ex);
+                MessageUtils.ShowException(ex);
             }
         }
 
@@ -176,10 +179,11 @@ namespace PassKeeper.Windows.Forms
                 var pass = Context.Passes.SingleOrDefault(x => x.Id == Context.SelectedPass.Id);
 
                 Context.SetSelectedPass(pass);
+                State = ModifyState.View;
             }
             catch (Exception ex)
             {
-                DialogUtils.ShowException(ex);
+                MessageUtils.ShowException(ex);
             }
         }
 
@@ -187,15 +191,18 @@ namespace PassKeeper.Windows.Forms
         {
             try
             {
+                this.Enabled = false;
                 if (State == ModifyState.Modify)
                     throw new PassException("Jelenleg módosítás alatt ál egy profil, kérlek fejezd azt be előbb, majd azt követően próbálj menteni!");
 
                 Context.SavePasses();
-                DialogUtils.ShowInformationMessage("Mentés", "A mentés elkészült!");
+
+                this.Enabled = true;
+                MessageUtils.ShowInformationMessage("Mentés", "A mentés elkészült!");
             }
             catch (Exception ex)
             {
-                DialogUtils.ShowException(ex);
+                MessageUtils.ShowException(ex);
             }
         }
 
@@ -208,9 +215,9 @@ namespace PassKeeper.Windows.Forms
 
                 var pass = _listBoxProfiles.SelectedItem as PassProfileModel;
                 if (pass == null)
-                    DialogUtils.ShowWarrningMessage("Törlés", "Nem választottál ki egyetlen sort sem!");
+                    MessageUtils.ShowWarrningMessage("Törlés", "Nem választottál ki egyetlen sort sem!");
 
-                var result = DialogUtils.ShowQuestionMessage("Törlés megerősítése!", String.Format("Biztosan törölni akarod a(z) '{0}' nevű profilodat?", pass.Name));
+                var result = MessageUtils.ShowQuestionMessage("Törlés megerősítése!", String.Format("Biztosan törölni akarod a(z) '{0}' nevű profilodat?", pass.Name));
                 if (result != System.Windows.Forms.DialogResult.Yes)
                     return;
 
@@ -220,14 +227,84 @@ namespace PassKeeper.Windows.Forms
             }
             catch (Exception ex)
             {
-                DialogUtils.ShowException(ex);
+                MessageUtils.ShowException(ex);
             }
         }
 
         private void RefreshListDataSource()
         {
+            var selectedItem = _listBoxProfiles.SelectedItem as PassProfileModel;            
             _listBoxProfiles.Items.Clear();
-            _listBoxProfiles.Items.AddRange(Context.Passes.ToArray());
+            _listBoxProfiles.Items.AddRange(Context.Passes.FilteredCollection);
+            if (selectedItem != null && _listBoxProfiles.Items.Count != 0)
+            {
+                foreach (var item in _listBoxProfiles.Items)
+                {
+                    var listItem = item as PassProfileModel;
+                    if (listItem != null && listItem.Id == selectedItem.Id)
+                    {
+                        _listBoxProfiles.SelectedItem = item;
+                        _listBoxProfiles.Refresh();
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void _textBoxProfileName_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!_textBoxProfileName.ReadOnly && Context.SelectedPass != null)
+                {
+                    Context.RefreshSelectedName(_textBoxProfileName.Text);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageUtils.ShowException(ex);
+            }
+        }
+
+        internal void RefreshProfiles()
+        {
+            try
+            {
+                RefreshListDataSource();
+            }
+            catch (Exception ex)
+            {
+                MessageUtils.ShowException(ex);
+            }
+        }
+
+        private void _textBoxPassword_KeyDown(object sender, KeyEventArgs e)
+        {
+            SetPasswordTextBox(e);
+        }
+
+        private void SetPasswordTextBox(KeyEventArgs e)
+        {
+            _textBoxPassword.UseSystemPasswordChar = !e.Control;
+        }
+
+        private void _textBoxPassword_KeyUp(object sender, KeyEventArgs e)
+        {
+            SetPasswordTextBox(e);
+        }
+
+        private void _textBoxSearch_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                Context.Passes.Filter = _textBoxSearch.Text;
+                this.RefreshListDataSource();
+            }
+            catch (Exception ex)
+            {
+                MessageUtils.ShowException(ex);
+            }
+
         }
     }
 }
