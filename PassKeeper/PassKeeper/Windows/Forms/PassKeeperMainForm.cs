@@ -202,6 +202,7 @@ namespace PassKeeper.Windows.Forms
             }
             catch (Exception ex)
             {
+                this.Enabled = true;
                 MessageUtils.ShowException(ex);
             }
         }
